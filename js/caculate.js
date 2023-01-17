@@ -1,7 +1,10 @@
-var vehicleArr = [];
-var distanceArr = [];
-var timeArr = [];
-var bilArr = [];
+var vehicleValue;
+var distanceValue = 0;
+var timeValue = 0;
+var bilValue = 0;
+var firstKm = 0;
+var firstPrice = 0;
+var timePrice = 0;
 document.getElementById("tinhtien").addEventListener('click', function () {
   var distance = document.getElementById("distance").value * 1;
   var time = document.getElementById("time").value * 1;
@@ -35,61 +38,84 @@ document.getElementById("tinhtien").addEventListener('click', function () {
       * @returns 
       */
     function tinhTien(distance, time) {
+      var firstKm = 0;
+      var firstPrice = 0;
+      var timePrice = 0;
       var bill;
       if (vehicleUse == "uberX") {
-        bill = ((distance * 12000) - 4000) + (time * 2000)
+        bill = ((distance * 12000) - 4000) + (time * 2000);
+        firstKm = 8000;
+        firstPrice = 12000;
+        timePrice = 2000;
       }
       else if (vehicleUse == "uberSUV") {
-        bill = ((distance * 14000) - 5000) + (time * 3000)
+        bill = ((distance * 14000) - 5000) + (time * 3000);
+        firstKm = 9000;
+        firstPrice = 14000;
+        timePrice = 3000;
+
       }
       else if (vehicleUse == "uberBlack") {
-        bill = ((distance * 16000) - 6000) + (time * 4000)
+        bill = ((distance * 16000) - 6000) + (time * 4000);
+        firstKm = 10000;
+        firstPrice = 16000;
+        timePrice = 4000;
       }
-      return bill;
+      return { bill, firstKm, firstPrice, timePrice };
     };
 
-    var bill = tinhTien(distance, time);
-    alert("tinh tien thanh cong")
-    vehicleArr.push(vehicleUse);
-    distanceArr.push(distance);
-    timeArr.push(time);
-    bilArr.push(bill);
-    console.log(vehicleArr);
-    console.log(distanceArr);
-    console.log(timeArr);
-    console.log(bilArr);
 
+
+    var bill = tinhTien(distance,time)
+    bilValue = bill.bill;
+    firstKm = bill.firstKm;
+    firstPrice = bill.firstPrice;
+    timePrice = bill.timePrice;
+    vehicleValue = vehicleUse;
+    distanceValue = distance;
+    timeValue = time
+    document.getElementById("divThanhTien").style = "display:block";
+    document.getElementById("xuatTien").innerHTML = bilValue;
   }
 });
 /**
  * In Hoa Don
  */
 document.getElementById('inhoadon').addEventListener('click', function () {
-  if (vehicleArr.length == 0 || distanceArr.length == 0 || timeArr.length == 0 || bilArr.length == 0) {
+  if (bilValue == 0) {
     alert("Ban chua tinh tien");
   }
   else {
     var contentHTML = "";
-    for (var i = 0; i < vehicleArr.length; i++) {
-      contentHTML += "<tr>";
-      contentHTML += "<td>" + "Xe: "  + vehicleArr[i] + "</td>";
-      contentHTML += "<td>" + distanceArr[i] + " Km" + "</td>";
-      contentHTML += "<td>" + timeArr[i] + " Phut" + "</td>";
-      contentHTML += "<td>" + bilArr[i] + " VND" + "</td>";
-      contentHTML += "</tr>";
-
-    }
+    contentHTML =
+      `
+    <tr>
+      <td>${vehicleValue}</td>
+      <td> 1 km </td>
+      <td>${firstKm}</td>
+      <td>${firstKm}</td>
+    </tr>
+    <tr>
+      <td>${vehicleValue}</td>
+      <td>${distanceValue-1}</td>
+      <td>${firstPrice}</td>
+      <td>${firstPrice * (distanceValue-1)}</td>
+    </tr>
+    <tr>
+      <td> Thời gian chờ </td>
+      <td>${timeValue}</td>
+      <td>${timePrice}</td>
+      <td>${timePrice * timeValue}</td>
+    </tr>
+    <tr>
+      <td>Total</td>
+      <td  colspan="3" class"text-right">${bilValue}</td>
+    </tr>
+    `
     document.getElementById("txtBill").innerHTML = contentHTML;
 
-    var totalHTML = ""; 
-    var totalCost = 0;
 
-    for (var i = 0; i < bilArr.length; i++) {
-      totalCost += bilArr[i]
-      totalHTML = "<td>" + "Tong tien: " + totalCost + "</td>"; 
-    };
-    document.getElementById("txtTotal").innerHTML = totalHTML;
-  
+
   }
 
 
